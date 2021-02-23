@@ -22,9 +22,10 @@ $(function() {
             var minColor = [79, 91, 249];
             var zeroColor = [87, 150, 67];
             var maxColor = [186, 50, 50];
+            
+            if (value == 0) return `rgb(${zeroColor[0]}, ${zeroColor[1]}, ${zeroColor[2]})`;
             if (value == min) return `rgb(${minColor[0]}, ${minColor[1]}, ${minColor[2]})`;
             if (value == max) return `rgb(${maxColor[0]}, ${maxColor[1]}, ${maxColor[2]})`;
-            if (value == 0) return `rgb(${zeroColor[0]}, ${zeroColor[1]}, ${zeroColor[2]})`;
 
             var lowColor;
             var hiColor;
