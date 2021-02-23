@@ -1,0 +1,25 @@
+#tab_plugin_ublmeshedit table.mesh-grid {
+    border: 1px solid;
+    border-collapse: collapse;
+}
+
+#tab_plugin_ublmeshedit button.mesh-button {
+    width: 4em;
+    height: 4em;
+    border: 1px solid rgb(54, 189, 54);
+    border-radius: 3px;
+    color: #fff;
+    margin: 0px;
+}
+
+#tab_plugin_ublmeshedit button.mesh-button:hover {
+    border: 2px solid #fff;
+}
+
+#tab_plugin_ublmeshedit button.mesh-selected {
+    border: 3px solid #000;
+}
+
+#tab_plugin_ublmeshedit div.ubl-mesh-editor-outer > div {
+    margin: 5px;
+}

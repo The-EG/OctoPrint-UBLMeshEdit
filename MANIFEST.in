@@ -1,0 +1,4 @@
+include README.md
+recursive-include octoprint_ublmeshedit/templates *
+recursive-include octoprint_ublmeshedit/translations *
+recursive-include octoprint_ublmeshedit/static *

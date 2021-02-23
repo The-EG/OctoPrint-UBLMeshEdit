@@ -1,0 +1,40 @@
+{% assets "js_client" %}
+<script src="{{ url_for("static", filename="js/lib/jquery/jquery.min.js") }}"></script>
+<script src="{{ url_for("static", filename="js/lib/lodash.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="webassets/packed_client.js") }}"></script>
+{% endassets %}
+
+<div class="ubl-mesh-editor-outer">
+    <div id="ublMeshEditorGrid"></div>
+    <div>
+        <button id="ublMeshEditorGetMeshBtn" class="btn btn-primary" data-bind="click: getMesh, enable: printerState.isReady">
+            <i class="fas fa-border-all"></i>
+            <span>Get Mesh</span>
+        </button>
+        <button id="ublMeshEditorClearBtn" class="btn" data-bind="click: zeroMesh, enabled: printerState.isReady">
+            <i class="fas fa-trash-alt"></i>
+            <span>Clear</span>
+        </button>
+    </div>
+    
+    <div>
+        <div>Z Value: <input class="mesh-height" min="-2" max="2" step="0.025" type="number" id="ublMeshEditVal" data-bind="value: pointValue"></div>
+        <button id="ublMeshEditSavePoint" disabled class="btn btn-primary" data-bind="click: savePoint">
+            <i class="fas fa-crosshairs"></i>
+            <span>Save Value</span>
+        </button>
+    </div>
+    <div>
+        <span>Mesh Save Slot:</span><input type="number" data-bind=" value: saveSlot">
+    </div>
+    <div>
+        <button id="ublMeshEditorSaveToSlot" class="btn" data-bind="click: saveToSlot, enable: printerState.isReady">
+            <i class="fas fa-download"></i>
+            <span>Save</span>
+        </button>
+        <button id="ublMeshEditorLoadFromSlot" class="btn" data-bind="click: loadFromSlot, enable: printerState.isReady">
+            <i class="fas fa-upload"></i>
+            <span>Load</span>
+        </button>
+    </div>    
+</div>
