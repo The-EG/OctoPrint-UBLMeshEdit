@@ -13,6 +13,7 @@ import octoprint.plugin
 
 class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
                         octoprint.plugin.AssetPlugin,
+						octoprint.plugin.SimpleApiPlugin,
                         octoprint.plugin.TemplatePlugin):
 
 	def __init__(self):
@@ -20,6 +21,7 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 		self.mesh_data = None
 		self.in_topo = False
 		self.slot_num = None
+		self.wait_ok = False
 
 	##~~ SettingsPlugin mixin
 
@@ -38,14 +40,24 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 			css=["css/ublmeshedit.css"]
 		)
 
+	##~~ SimpleApiPlugin mixin
+
+	def get_api_commands(self):
+		return {'wait_command': []}
+
+	def on_api_command(self, command, data):
+		if command == 'wait_command':
+			self._logger.info("Waiting for ok")
+			self.wait_ok = True
+
 	def on_gcode_sending(self, comm, phase, cmd, cmd_type, gcode, subcode=None, tags=None, *args, **kwargs):
 		if cmd=='M420 V1 T1': self.wait_mesh = True
 		return None
 
 	def on_gcode_recieved(self, comm, line, *args, **kwargs):
-		if not self.wait_mesh or line.strip() in ['','wait','Not SD printing'] or line.strip()[:2]=='T:':
+		if ((not self.wait_mesh) and (not self.wait_ok)) or line.strip() in ['','wait','Not SD printing'] or line.strip()[:2]=='T:':
 			return line
-		
+
 		if line.strip() == 'Bed Topography Report for CSV:':
 			self.in_topo = True
 			self.mesh_data = []
@@ -53,6 +65,10 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 			self.in_topo = False
 		elif line.strip() == 'ok':
 			self.wait_mesh = False
+			if self.wait_ok:
+				self.wait_ok = False
+				self._logger.info("Got ok")
+				self.send_command_complete_event()
 			self.send_mesh_collected_event()
 		elif 'Storage slot:' in line.strip():
 			self.slot_num = int(line.strip()[13:])
@@ -64,6 +80,10 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 	def on_atcommand_sending(self, comm, phase, cmd, params, tags=None, *args, **kwargs):
 		if cmd == 'UBLMESHEDIT': self.wait_mesh = True
 
+	def send_command_complete_event(self):
+		event = octoprint.events.Events.PLUGIN_UBLMESHEDIT_COMMAND_COMPLETE
+		self._event_bus.fire(event)
+
 	def send_mesh_collected_event(self):
 		event = octoprint.events.Events.PLUGIN_UBLMESHEDIT_MESH_READY
 		if self.mesh_data is None:
@@ -73,7 +93,7 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 		self._event_bus.fire(event, payload=data)
 
 	def register_custom_events(*args, **kwargs):
-		return ["mesh_ready"]
+		return ["mesh_ready", "command_complete"]
 
 	##~~ Softwareupdate hook
 

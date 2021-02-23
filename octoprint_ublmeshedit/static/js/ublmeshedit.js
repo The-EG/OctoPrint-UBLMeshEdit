@@ -17,6 +17,7 @@ $(function() {
         self.gridSize = undefined;
         self.gridData = undefined;
         self.saveSlot = ko.observable(undefined);
+        self.waitingOK = ko.observable(false);
 
         self.meshButtonColor = function(value, min, max) {
             var minColor = [79, 91, 249];
@@ -46,6 +47,17 @@ $(function() {
             var b = lowColor[2] + ((hiColor[2] - lowColor[2]) * s);
 
             return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        self.waitCommand = function () {
+            self.waitingOK = true;
+            OctoPrint.simpleApiCommand('ublmeshedit', 'wait_command');
+        }
+
+        self.onEventplugin_ublmeshedit_command_complete = function() {
+            self.waitingOK = false;
+            console.log('command complete')
+            self.getMesh();
         }
 
         self.onEventplugin_ublmeshedit_mesh_ready = function(payload) {
@@ -108,23 +120,23 @@ $(function() {
         }
 
         self.zeroMesh = function() {
+            self.waitCommand();
             OctoPrint.control.sendGcode('G29 P0');
-            self.getMesh();
         }
 
         self.savePoint = function() {
+            self.waitCommand();
             OctoPrint.control.sendGcode(`M421 I${self.pointCol()} J${self.pointRow()} Z${self.pointValue()}`);
-            self.getMesh();
         }
 
         self.saveToSlot = function() {
+            self.waitCommand();
             OctoPrint.control.sendGcode(`G29 S${self.saveSlot()}`);
-            self.getMesh();
         }
 
         self.loadFromSlot = function() {
+            self.waitCommand();
             OctoPrint.control.sendGcode(`G29 L${self.saveSlot()}`);
-            self.getMesh();
         }
     }
 
