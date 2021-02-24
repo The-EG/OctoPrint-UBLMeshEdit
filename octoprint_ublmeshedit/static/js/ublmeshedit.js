@@ -56,7 +56,6 @@ $(function() {
 
         self.onEventplugin_ublmeshedit_command_complete = function() {
             self.waitingOK = false;
-            console.log('command complete')
             self.getMesh();
         }
 

@@ -47,7 +47,6 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 
 	def on_api_command(self, command, data):
 		if command == 'wait_command':
-			self._logger.info("Waiting for ok")
 			self.wait_ok = True
 
 	def on_gcode_sending(self, comm, phase, cmd, cmd_type, gcode, subcode=None, tags=None, *args, **kwargs):
@@ -67,7 +66,6 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 			self.wait_mesh = False
 			if self.wait_ok:
 				self.wait_ok = False
-				self._logger.info("Got ok")
 				self.send_command_complete_event()
 			self.send_mesh_collected_event()
 		elif 'Storage slot:' in line.strip():
