@@ -11,8 +11,7 @@ from __future__ import absolute_import
 
 import octoprint.plugin
 
-class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
-                        octoprint.plugin.AssetPlugin,
+class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 						octoprint.plugin.SimpleApiPlugin,
                         octoprint.plugin.TemplatePlugin):
 
@@ -22,13 +21,6 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 		self.in_topo = False
 		self.slot_num = None
 		self.wait_ok = False
-
-	##~~ SettingsPlugin mixin
-
-	def get_settings_defaults(self):
-		return dict(
-			# put your plugin's default settings here
-		)
 
 	##~~ AssetPlugin mixin
 
@@ -60,7 +52,7 @@ class UBLMeshEditPlugin(octoprint.plugin.SettingsPlugin,
 		if line.strip() == 'Bed Topography Report for CSV:':
 			self.in_topo = True
 			self.mesh_data = []
-		elif line.strip() in ['Mesh is valid', 'Mesh is not valid']:
+		elif line.strip() in ['Mesh is valid']:
 			self.in_topo = False
 		elif line.strip() == 'ok':
 			self.wait_mesh = False
