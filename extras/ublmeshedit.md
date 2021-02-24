@@ -3,45 +3,30 @@ layout: plugin
 
 id: ublmeshedit
 title: OctoPrint-UBLMeshEdit
-description: TODO
+description: A plugin that provides a method for manually editing and saving/loading UBL meshes.
 authors:
 - Taylor Talkington
 license: AGPLv3
 
-# TODO
-date: today's date in format YYYY-MM-DD, e.g. 2015-04-21
+date: 2021-02-24
 
 homepage: https://github.com/The-EG/OctoPrint-UBLMeshEdit
 source: https://github.com/The-EG/OctoPrint-UBLMeshEdit
 archive: https://github.com/The-EG/OctoPrint-UBLMeshEdit/archive/main.zip
 
-# TODO
-# Set this to true if your plugin uses the dependency_links setup parameter to include
-# library versions not yet published on PyPi. SHOULD ONLY BE USED IF THERE IS NO OTHER OPTION!
-#follow_dependency_links: false
 
-# TODO
 tags:
-- a list
-- of tags
-- that apply
-- to your plugin
-- (take a look at the existing plugins for what makes sense here)
+- bed leveling
+- ubl
+- mesh
 
-# TODO
 screenshots:
-- url: url of a screenshot, /assets/img/...
-  alt: alt-text of a screenshot
-  caption: caption of a screenshot
-- url: url of another screenshot, /assets/img/...
-  alt: alt-text of another screenshot
-  caption: caption of another screenshot
-- ...
+- url: /assets/img/ublmeshedit/screenshot1.png
+  alt: UBL Mesh Editor
+  caption: UBL Mesh Editor
 
-# TODO
-featuredimage: url of a featured image for your plugin, /assets/img/...
+featuredimage: /assets/img/ublmeshedit/screenshot1.png.
 
-# TODO
 # You only need the following if your plugin requires specific OctoPrint versions or
 # specific operating systems to function - you can safely remove the whole
 # "compatibility" block if this is not the case.
@@ -59,7 +44,7 @@ compatibility:
   # OctoPrint versions being supported.
 
   octoprint:
-  - 1.2.0
+  - 1.3.7
 
   # List of compatible operating systems
   #
@@ -98,5 +83,25 @@ compatibility:
 
 ---
 
-**TODO**: Longer description of your plugin, configuration examples etc. This part will be visible on the page at
-http://plugins.octoprint.org/plugin/ublmeshedit/
+# OctoPrint-UBLMeshEdit
+
+![screenshot](extras/assets/img/screenshot.png)
+
+UBL Mesh Editor can be used to view, edit and manage Marlin Unified Bed Leveling (UBL) meshes. 
+
+In its current state, this plugin is intended to be used to make minor tweaks to a mesh that is already valid and setup. This could be to correct a point that wasn't probed properly for some reason or to fine tune the mesh when using `PROBE_MANUALLY`. It won't help with the initial creation of a mesh, except in the case of starting with a zero mesh and manually editing points.
+
+*Note: this is only intended for UBL, and not any other ABL or MBL setup. It assumes a square mesh and will not function properly with other shapes.*
+
+## Usage
+
+With the printer connected and idle, switch to the 'UBL Mesh Editor' tab and click 'Get Mesh'. The current mesh will be shown.
+
+Click a point to edit the value. The current value will be shown next to 'Z Value.' That value can be changed by clicking up/down or by entering a value. To save the value, click 'Save Value.'
+
+UBL Mesh Editor can also save and load saved meshes. Select the mesh slot next to 'Mesh Save Slot' and click either 'Save' or 'Load.'
+
+*Note: the plugin does not currently verify the save mesh slot is valid.*
+
+For issues, [check the issues on GitHub](https://github.com/The-EG/OctoPrint-UBLMeshEdit/issues) and create one if needed.
+
