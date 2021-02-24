@@ -1,6 +1,6 @@
 # OctoPrint-UBLMeshEdit
 
-![screenshot](extras/assets/img/screenshot.png)
+![screenshot](assets/img/screenshot.png)
 
 UBL Mesh Editor can be used to view, edit and manage Marlin Unified Bed Leveling (UBL) meshes. 
 
