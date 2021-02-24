@@ -7,11 +7,11 @@
 <div class="ubl-mesh-editor-outer">
     <div id="ublMeshEditorGrid"></div>
     <div>
-        <button id="ublMeshEditorGetMeshBtn" class="btn btn-primary" data-bind="click: getMesh, enable: printerState.isReady">
+        <button id="ublMeshEditorGetMeshBtn" class="btn btn-primary" data-bind="click: getMesh, enable: printerState.isReady() && !waitingOK()">
             <i class="fas fa-border-all"></i>
             <span>Get Mesh</span>
         </button>
-        <button id="ublMeshEditorClearBtn" class="btn" data-bind="click: zeroMesh, enabled: printerState.isReady">
+        <button id="ublMeshEditorClearBtn" class="btn" data-bind="click: zeroMesh, enable: printerState.isReady() && !waitingOK()">
             <i class="fas fa-trash-alt"></i>
             <span>Clear</span>
         </button>
@@ -28,11 +28,11 @@
         <span>Mesh Save Slot:</span><input type="number" data-bind=" value: saveSlot">
     </div>
     <div>
-        <button id="ublMeshEditorSaveToSlot" class="btn" data-bind="click: saveToSlot, enable: printerState.isReady">
+        <button id="ublMeshEditorSaveToSlot" class="btn" data-bind="click: saveToSlot, enable: printerState.isReady() && !waitingOK()">
             <i class="fas fa-download"></i>
             <span>Save</span>
         </button>
-        <button id="ublMeshEditorLoadFromSlot" class="btn" data-bind="click: loadFromSlot, enable: printerState.isReady">
+        <button id="ublMeshEditorLoadFromSlot" class="btn" data-bind="click: loadFromSlot, enable: printerState.isReady() && !waitingOK()">
             <i class="fas fa-upload"></i>
             <span>Load</span>
         </button>
