@@ -12,6 +12,7 @@ from __future__ import absolute_import
 import octoprint.plugin
 
 class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
+						octoprint.plugin.SettingsPlugin,
 						octoprint.plugin.SimpleApiPlugin,
                         octoprint.plugin.TemplatePlugin):
 
@@ -21,6 +22,17 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 		self.in_topo = False
 		self.slot_num = None
 		self.wait_ok = False
+
+	##~~ SettingsPlugin mixin
+	def get_settings_defaults(self):
+		return dict(
+			export_gcode_filename="Restore Mesh - {printerName} - {dateTime}.gcode"
+		)
+
+	def get_template_configs(self):
+	 	return [
+	 		dict(type="settings", custom_bindings=False)
+	 	]
 
 	##~~ AssetPlugin mixin
 

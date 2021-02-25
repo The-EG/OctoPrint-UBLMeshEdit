@@ -10,6 +10,7 @@ $(function() {
 
         self.settings = parameters[0];
         self.printerState = parameters[1];
+        self.printerConnection = parameters[2];
 
         self.pointValue = ko.observable(undefined);
         self.pointCol = ko.observable(undefined);
@@ -138,6 +139,31 @@ $(function() {
             OctoPrint.control.sendGcode(`G29 L${self.saveSlot()}`);
         }
 
+        self.getExportFilename = function() {
+            var now = new Date();
+            var pad = function(num) {
+                if (num < 10) return '0' + num;
+                return num;
+            }
+            var dateTime = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}.${pad(now.getMinutes())}.${pad(now.getSeconds())}`;
+            var printerName = undefined;
+
+            for(var i=0;i<self.printerConnection.printerOptions().length;i++) {
+                var opts = self.printerConnection.printerOptions()[i];
+                if (opts.id == self.printerConnection.selectedPrinter()) {
+                    printerName = opts.name;
+                    break;
+                }
+            }
+            
+
+            var fileName = self.settings.settings.plugins.ublmeshedit.export_gcode_filename();
+            fileName = fileName.replace('{dateTime}', dateTime);
+            fileName = fileName.replace('{printerName}', printerName);
+
+            return fileName;
+        }
+
         self.exportMesh = function() {
             var gcode = "";
             gcode += "; Mesh exported from UBL Mesh Editor plugin\n";
@@ -154,7 +180,7 @@ $(function() {
 
             $('#ublMeshEditExportAnchor').attr({
                 href: `data:text/x.gcode;charset=utf-8,${encodeURIComponent(gcode)}`,
-                download: 'Restore Mesh.gcode'
+                download: self.getExportFilename()
             })[0].click();
         }
     }
@@ -165,7 +191,7 @@ $(function() {
      */
     OCTOPRINT_VIEWMODELS.push({
         construct: UblmesheditViewModel,
-        dependencies: ["settingsViewModel" , "printerStateViewModel"],
+        dependencies: ["settingsViewModel" , "printerStateViewModel", "connectionViewModel"],
         elements: ["#tab_plugin_ublmeshedit"]
     });
 });
