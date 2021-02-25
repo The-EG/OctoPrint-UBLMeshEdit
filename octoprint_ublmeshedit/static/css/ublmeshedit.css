@@ -3,6 +3,19 @@
     border-collapse: collapse;
 }
 
+#tab_plugin_ublmeshedit div.ubl-mesh-editor-warning {
+    border: 2px solid rgb(185, 143, 27);
+    color: rgb(109, 46, 46);
+    background-color: rgb(236, 228, 156);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#tab_plugin_ublmeshedit span.ubl-mesh-editor-warning  {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 #tab_plugin_ublmeshedit button.mesh-button {
     width: 4em;
     height: 4em;
