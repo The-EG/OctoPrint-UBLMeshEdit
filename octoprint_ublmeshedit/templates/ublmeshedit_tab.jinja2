@@ -15,6 +15,10 @@
             <i class="fas fa-trash-alt"></i>
             <span>Clear</span>
         </button>
+        <button id="ublMeshEditorExport" class="btn" data-bind="click: exportMesh, enable: printerState.isReady() && !waitingOK() && gridData()">
+            <i class="fas fa-file-code"></i>
+            <span>Export GCode</span>
+        </button>
     </div>
     
     <div>
@@ -38,3 +42,5 @@
         </button>
     </div>    
 </div>
+
+<a id="ublMeshEditExportAnchor" style="display:none"></a>

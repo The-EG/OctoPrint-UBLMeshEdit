@@ -15,7 +15,7 @@ $(function() {
         self.pointCol = ko.observable(undefined);
         self.pointRow = ko.observable(undefined);
         self.gridSize = undefined;
-        self.gridData = undefined;
+        self.gridData = ko.observable(undefined);
         self.saveSlot = ko.observable(undefined);
         self.waitingOK = ko.observable(false);
 
@@ -69,13 +69,13 @@ $(function() {
 
             if (payload.result!='ok') {
                 self.gridSize = undefined;
-                self.gridData = undefined;
+                self.gridData(undefined);
                 self.saveSlot(undefined);
                 return;
             }
 
             self.gridSize = payload.gridSize;
-            self.gridData = payload.data;
+            self.gridData(payload.data);
 
             self.saveSlot(payload.saveSlot);
 
@@ -85,8 +85,8 @@ $(function() {
             var valMax = 0;
             for(var row = 0; row < self.gridSize; row++) {
                 for(var col =0; col < self.gridSize; col++) {
-                    if (self.gridData[row][col] < valMin) valMin = self.gridData[row][col];
-                    if (self.gridData[row][col] > valMax) valMax = self.gridData[row][col];
+                    if (self.gridData()[row][col] < valMin) valMin = self.gridData()[row][col];
+                    if (self.gridData()[row][col] > valMax) valMax = self.gridData()[row][col];
                 }
             }
  
@@ -95,8 +95,8 @@ $(function() {
                 tbl.append(tr);
                 for (var col = 0; col < self.gridSize; col++) {
                     var  btn = $('<button class="mesh-button" />');
-                    btn.text(self.gridData[row][col].toFixed(3));
-                    btn.attr({'data-col': col, 'data-row': self.gridSize - 1 - row, 'style': `background-color: ${self.meshButtonColor(self.gridData[row][col],valMin, valMax)}`});
+                    btn.text(self.gridData()[row][col].toFixed(3));
+                    btn.attr({'data-col': col, 'data-row': self.gridSize - 1 - row, 'style': `background-color: ${self.meshButtonColor(self.gridData()[row][col],valMin, valMax)}`});
                     btn.click(self.selectPoint)
                     var td = $('<td />');
                     td.append(btn);
@@ -136,6 +136,26 @@ $(function() {
         self.loadFromSlot = function() {
             self.waitCommand();
             OctoPrint.control.sendGcode(`G29 L${self.saveSlot()}`);
+        }
+
+        self.exportMesh = function() {
+            var gcode = "";
+            gcode += "; Mesh exported from UBL Mesh Editor plugin\n";
+            gcode += `; Grid Size = ${self.gridSize}\n`;
+            gcode += `; Save Slot = ${self.saveSlot()}\n`;
+
+            for(var row = 0; row < self.gridSize; row++) {
+                for(var col =0; col < self.gridSize; col++) {
+                    gcode += `M421 I${col} J${self.gridSize - 1 - row} Z${self.gridData()[row][col]}\n`;
+                }
+            }
+
+            gcode += 'M420 V1 T1\n';
+
+            $('#ublMeshEditExportAnchor').attr({
+                href: `data:text/x.gcode;charset=utf-8,${encodeURIComponent(gcode)}`,
+                download: 'Restore Mesh.gcode'
+            })[0].click();
         }
     }
 
