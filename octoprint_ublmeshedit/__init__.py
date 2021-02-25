@@ -63,7 +63,7 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 		elif 'Storage slot:' in line.strip():
 			self.slot_num = int(line.strip()[13:])
 		elif self.in_topo:
-			self.mesh_data.append(list(map(float,line.strip().split('\t'))))
+			self.mesh_data.append(list(map(float,line.strip().split())))
 
 		return line
 
