@@ -29,5 +29,5 @@ UBL Mesh Editor can also save and load saved meshes. Select the mesh slot next t
 
  - [ ] Add 'move nozzle to point' functionality
  - [ ] Add more general error checking and disable buttons when appropriate
- - [ ] Add export/import mesh to/from csv
+ - [x] Add export/import mesh to/from csv (implemented export to GCode)
  - [ ] Handle invalid meshes?
