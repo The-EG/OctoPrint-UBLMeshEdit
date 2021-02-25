@@ -54,7 +54,7 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 			self.mesh_data = []
 		elif line.strip() in ['Mesh is valid']:
 			self.in_topo = False
-		elif line.strip() == 'ok':
+		elif line.strip() == 'ok' or line.strip()[:2]=='ok':
 			self.wait_mesh = False
 			if self.wait_ok:
 				self.wait_ok = False
