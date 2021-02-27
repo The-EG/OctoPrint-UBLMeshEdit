@@ -51,12 +51,12 @@ $(function() {
         }
 
         self.waitCommand = function () {
-            self.waitingOK = true;
+            self.waitingOK(true);
             OctoPrint.simpleApiCommand('ublmeshedit', 'wait_command');
         }
 
         self.onEventplugin_ublmeshedit_command_complete = function() {
-            self.waitingOK = false;
+            self.waitingOK(false);
             self.getMesh();
         }
 
