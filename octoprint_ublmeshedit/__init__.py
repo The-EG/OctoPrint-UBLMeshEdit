@@ -22,6 +22,9 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 		self.in_topo = False
 		self.slot_num = None
 		self.wait_ok = False
+		self.skip_first = False
+		self.skip_line = False
+		self.not_ubl = False
 
 	##~~ SettingsPlugin mixin
 	def get_settings_defaults(self):
@@ -64,10 +67,19 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 		if line.strip() == 'Bed Topography Report for CSV:':
 			self.in_topo = True
 			self.mesh_data = []
-		elif line.strip() in ['Mesh is valid']:
+			self.not_ubl = False
+		elif line.strip() == 'Bilinear Leveling Grid:':
+			self.in_topo = True
+			self.mesh_data = []
+			self.slot_num = None
+			self.skip_first = True
+			self.skip_line = True
+			self.not_ubl = True
+		elif line.strip() in ['Mesh is valid','echo:Bed Leveling OFF', 'echo:Bed Leveling ON']:
 			self.in_topo = False
 		elif line.strip() == 'ok' or line.strip()[:2]=='ok':
 			self.wait_mesh = False
+			self.skip_first = False
 			if self.wait_ok:
 				self.wait_ok = False
 				self.send_command_complete_event()
@@ -75,7 +87,12 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 		elif 'Storage slot:' in line.strip():
 			self.slot_num = int(line.strip()[13:])
 		elif self.in_topo:
-			self.mesh_data.append(list(map(float,line.strip().split())))
+			if self.skip_line:
+				self.skip_line = False
+			else:
+				row = list(map(float,line.strip().split()))
+				if self.skip_first: row = row[1:]
+				self.mesh_data.append(row)
 
 		return line
 
@@ -92,6 +109,7 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 			data = {'result': 'no mesh'}
 		else:
 			data = {'result': 'ok', 'data': self.mesh_data, 'gridSize': len(self.mesh_data), 'saveSlot': self.slot_num}
+		if self.not_ubl: data['notUBL'] = True
 		self._event_bus.fire(event, payload=data)
 
 	def register_custom_events(*args, **kwargs):

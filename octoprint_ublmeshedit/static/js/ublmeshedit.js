@@ -19,6 +19,7 @@ $(function() {
         self.gridData = ko.observable(undefined);
         self.saveSlot = ko.observable(undefined);
         self.waitingOK = ko.observable(false);
+        self.notUBL = ko.observable(false);
 
         self.meshButtonColor = function(value, min, max) {
             var minColor = [79, 91, 249];
@@ -75,6 +76,12 @@ $(function() {
                 return;
             }
 
+            if (payload.notUBL) {
+                self.notUBL(true);
+            } else {
+                self.notUBL(false);
+            }
+
             self.gridSize = payload.gridSize;
             self.gridData(payload.data);
 
@@ -96,8 +103,13 @@ $(function() {
                 tbl.append(tr);
                 for (var col = 0; col < self.gridSize; col++) {
                     var  btn = $('<button class="mesh-button" />');
+                    var dataCol = col;
+                    var dataRow = self.gridSize - 1 - row;
+                    if (self.notUBL()) {
+                        dataRow = row;
+                    }
                     btn.text(self.gridData()[row][col].toFixed(3));
-                    btn.attr({'data-col': col, 'data-row': self.gridSize - 1 - row, 'style': `background-color: ${self.meshButtonColor(self.gridData()[row][col],valMin, valMax)}`});
+                    btn.attr({'data-col': dataCol, 'data-row': dataRow, 'style': `background-color: ${self.meshButtonColor(self.gridData[row][col],valMin, valMax)}`});
                     btn.click(self.selectPoint)
                     var td = $('<td />');
                     td.append(btn);
