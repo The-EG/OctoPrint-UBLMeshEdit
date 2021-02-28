@@ -10,14 +10,16 @@ $(function() {
 
         self.settings = parameters[0];
         self.printerState = parameters[1];
+        self.printerConnection = parameters[2];
 
         self.pointValue = ko.observable(undefined);
         self.pointCol = ko.observable(undefined);
         self.pointRow = ko.observable(undefined);
         self.gridSize = undefined;
-        self.gridData = undefined;
+        self.gridData = ko.observable(undefined);
         self.saveSlot = ko.observable(undefined);
         self.waitingOK = ko.observable(false);
+        self.notUBL = ko.observable(false);
 
         self.meshButtonColor = function(value, min, max) {
             var minColor = [79, 91, 249];
@@ -69,13 +71,19 @@ $(function() {
 
             if (payload.result!='ok') {
                 self.gridSize = undefined;
-                self.gridData = undefined;
+                self.gridData(undefined);
                 self.saveSlot(undefined);
                 return;
             }
 
+            if (payload.notUBL) {
+                self.notUBL(true);
+            } else {
+                self.notUBL(false);
+            }
+
             self.gridSize = payload.gridSize;
-            self.gridData = payload.data;
+            self.gridData(payload.data);
 
             self.saveSlot(payload.saveSlot);
 
@@ -85,8 +93,8 @@ $(function() {
             var valMax = 0;
             for(var row = 0; row < self.gridSize; row++) {
                 for(var col =0; col < self.gridSize; col++) {
-                    if (self.gridData[row][col] < valMin) valMin = self.gridData[row][col];
-                    if (self.gridData[row][col] > valMax) valMax = self.gridData[row][col];
+                    if (self.gridData()[row][col] < valMin) valMin = self.gridData()[row][col];
+                    if (self.gridData()[row][col] > valMax) valMax = self.gridData()[row][col];
                 }
             }
  
@@ -95,8 +103,13 @@ $(function() {
                 tbl.append(tr);
                 for (var col = 0; col < self.gridSize; col++) {
                     var  btn = $('<button class="mesh-button" />');
-                    btn.text(self.gridData[row][col].toFixed(3));
-                    btn.attr({'data-col': col, 'data-row': self.gridSize - 1 - row, 'style': `background-color: ${self.meshButtonColor(self.gridData[row][col],valMin, valMax)}`});
+                    var dataCol = col;
+                    var dataRow = self.gridSize - 1 - row;
+                    if (self.notUBL()) {
+                        dataRow = row;
+                    }
+                    btn.text(self.gridData()[row][col].toFixed(3));
+                    btn.attr({'data-col': dataCol, 'data-row': dataRow, 'style': `background-color: ${self.meshButtonColor(self.gridData()[row][col],valMin, valMax)}`});
                     btn.click(self.selectPoint)
                     var td = $('<td />');
                     td.append(btn);
@@ -137,6 +150,56 @@ $(function() {
             self.waitCommand();
             OctoPrint.control.sendGcode(`G29 L${self.saveSlot()}`);
         }
+
+        self.getExportFilename = function() {
+            var now = new Date();
+            var pad = function(num) {
+                if (num < 10) return '0' + num;
+                return num;
+            }
+            var dateTime = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}.${pad(now.getMinutes())}.${pad(now.getSeconds())}`;
+            var printerName = undefined;
+
+            for(var i=0;i<self.printerConnection.printerOptions().length;i++) {
+                var opts = self.printerConnection.printerOptions()[i];
+                if (opts.id == self.printerConnection.selectedPrinter()) {
+                    printerName = opts.name;
+                    break;
+                }
+            }
+            
+
+            var fileName = self.settings.settings.plugins.ublmeshedit.export_gcode_filename();
+            fileName = fileName.replace('{dateTime}', dateTime);
+            fileName = fileName.replace('{printerName}', printerName);
+
+            return fileName;
+        }
+
+        self.exportMesh = function() {
+            var gcode = "";
+            gcode += "; Mesh exported from UBL Mesh Editor plugin\n";
+            gcode += `; Grid Size = ${self.gridSize}\n`;
+            gcode += `; Save Slot = ${self.saveSlot()}\n`;
+
+            for(var row = 0; row < self.gridSize; row++) {
+                for(var col =0; col < self.gridSize; col++) {
+                    var i = col;
+                    var j = self.gridSize - 1 - row;
+                    if (self.notUBL()) {
+                        j = row;
+                    }
+                    gcode += `M421 I${i} J${j} Z${self.gridData()[row][col]}\n`;
+                }
+            }
+
+            gcode += 'M420 V1 T1\n';
+
+            $('#ublMeshEditExportAnchor').attr({
+                href: `data:text/x.gcode;charset=utf-8,${encodeURIComponent(gcode)}`,
+                download: self.getExportFilename()
+            })[0].click();
+        }
     }
 
     /* view model class, parameters for constructor, container to bind to
@@ -145,7 +208,7 @@ $(function() {
      */
     OCTOPRINT_VIEWMODELS.push({
         construct: UblmesheditViewModel,
-        dependencies: ["settingsViewModel" , "printerStateViewModel"],
+        dependencies: ["settingsViewModel" , "printerStateViewModel", "connectionViewModel"],
         elements: ["#tab_plugin_ublmeshedit"]
     });
 });
