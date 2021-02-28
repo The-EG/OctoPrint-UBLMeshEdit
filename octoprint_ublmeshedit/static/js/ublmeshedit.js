@@ -109,7 +109,7 @@ $(function() {
                         dataRow = row;
                     }
                     btn.text(self.gridData()[row][col].toFixed(3));
-                    btn.attr({'data-col': dataCol, 'data-row': dataRow, 'style': `background-color: ${self.meshButtonColor(self.gridData[row][col],valMin, valMax)}`});
+                    btn.attr({'data-col': dataCol, 'data-row': dataRow, 'style': `background-color: ${self.meshButtonColor(self.gridData()[row][col],valMin, valMax)}`});
                     btn.click(self.selectPoint)
                     var td = $('<td />');
                     td.append(btn);
@@ -184,7 +184,12 @@ $(function() {
 
             for(var row = 0; row < self.gridSize; row++) {
                 for(var col =0; col < self.gridSize; col++) {
-                    gcode += `M421 I${col} J${self.gridSize - 1 - row} Z${self.gridData()[row][col]}\n`;
+                    var i = col;
+                    var j = self.gridSize - 1 - row;
+                    if (self.notUBL()) {
+                        j = row;
+                    }
+                    gcode += `M421 I${i} J${j} Z${self.gridData()[row][col]}\n`;
                 }
             }
 
