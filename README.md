@@ -6,7 +6,7 @@ UBL Mesh Editor can be used to view, edit and manage Marlin Unified Bed Leveling
 
 In its current state, this plugin is intended to be used to make minor tweaks to a mesh that is already valid and setup. This could be to correct a point that wasn't probed properly for some reason or to fine tune the mesh when using `PROBE_MANUALLY`. It won't help with the initial creation of a mesh, except in the case of starting with a zero mesh and manually editing points.
 
-*Note: this is only intended for UBL, and not any other ABL or MBL setup. It assumes a square mesh and will not function properly with other shapes.*
+*Note: this is only intended for UBL, and not any other ABL or MBL setup. This plugin will attempt to show and provide basic functionality for ABL meshes, but some features will be disabled and others may not function as expected.*
 
 ## Setup
 
@@ -23,11 +23,11 @@ Click a point to edit the value. The current value will be shown next to 'Z Valu
 
 UBL Mesh Editor can also save and load saved meshes. Select the mesh slot next to 'Mesh Save Slot' and click either 'Save' or 'Load.'
 
+The current mesh can also be exported to a GCode script. This script can then be loaded and 'printed' to restore the mesh. This can be used to back up a mesh or transfer it to another printer.
+
 *Note: the plugin does not currently verify the save mesh slot is valid.*
 
 ## Todo
 
  - [ ] Add 'move nozzle to point' functionality
- - [ ] Add more general error checking and disable buttons when appropriate
- - [x] Add export/import mesh to/from csv (implemented export to GCode)
  - [ ] Handle invalid meshes?
