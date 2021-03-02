@@ -7,11 +7,22 @@
     border: 2px solid rgb(185, 143, 27);
     color: rgb(109, 46, 46);
     background-color: rgb(236, 228, 156);
+}
+
+#tab_plugin_ublmeshedit div.ubl-mesh-editor-info {
+    border: 2px solid rgb(0, 11, 114);
+    color: rgb(51, 87, 204);
+    background-color: rgb(225, 231, 252);
+}
+
+#tab_plugin_ublmeshedit div.ubl-mesh-editor-warning,
+#tab_plugin_ublmeshedit div.ubl-mesh-editor-info {
     border-radius: 5px;
     padding: 5px;
 }
 
-#tab_plugin_ublmeshedit span.ubl-mesh-editor-warning  {
+#tab_plugin_ublmeshedit span.ubl-mesh-editor-warning,
+#tab_plugin_ublmeshedit span.ubl-mesh-editor-info  {
     font-size: 1.5em;
     font-weight: bold;
 }

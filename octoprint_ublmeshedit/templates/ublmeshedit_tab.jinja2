@@ -10,6 +10,11 @@
         <span class="ubl-mesh-editor-warning">Warning</span>
         <p>This mesh does not look like a Unified Bed Leveling (UBL) mesh. This plugin will attempt to provide limited functionality for it, but some features are disabled and others may not function as expected.</p>
     </div>
+    <div id="ublMeshEditorNoMeshInfo" class="ubl-mesh-editor-info" data-bind="visible: showNoMesh">
+        <i class="fas fa-info-circle fa-2x"></i>
+        <span class="ubl-mesh-editor-warning">No Mesh</span>
+        <p>The command completed successfully, but no mesh was detected. If you are sure that you have UBL setup properly and are still getting this message, this may be a bug. Please report it: <a href="https://github.com/The-EG/OctoPrint-UBLMeshEdit/issues/new?assignees=&labels=&template=bug-report.md&title=%5BBUG%5D+New+Issue" target="_blank">Create New Bug Report</a></p>
+    </div>
     <div id="ublMeshEditorGrid"></div>
     <div>
         <button id="ublMeshEditorGetMeshBtn" class="btn btn-primary" data-bind="click: getMesh, enable: printerState.isReady() && !waitingOK()">

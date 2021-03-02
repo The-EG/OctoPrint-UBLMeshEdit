@@ -20,6 +20,7 @@ $(function() {
         self.saveSlot = ko.observable(undefined);
         self.waitingOK = ko.observable(false);
         self.notUBL = ko.observable(false);
+        self.showNoMesh = ko.observable(false);
 
         self.meshButtonColor = function(value, min, max) {
             var minColor = [79, 91, 249];
@@ -73,8 +74,11 @@ $(function() {
                 self.gridSize = undefined;
                 self.gridData(undefined);
                 self.saveSlot(undefined);
+                self.showNoMesh(true);
                 return;
             }
+
+            self.showNoMesh(false);
 
             if (payload.notUBL) {
                 self.notUBL(true);
