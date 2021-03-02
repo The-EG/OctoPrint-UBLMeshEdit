@@ -76,7 +76,7 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 			self.skip_first = True
 			self.skip_line = True
 			self.not_ubl = True
-		elif line.strip() in ['Mesh is valid','echo:Bed Leveling OFF', 'echo:Bed Leveling ON']:
+		elif line.strip() in ['Mesh is valid','echo:Bed Leveling OFF', 'echo:Bed Leveling ON'] or line.startswith('Subdivided with'):
 			self.in_topo = False
 		elif line.strip() == 'ok' or line.strip()[:2]=='ok':
 			self.wait_mesh = False
