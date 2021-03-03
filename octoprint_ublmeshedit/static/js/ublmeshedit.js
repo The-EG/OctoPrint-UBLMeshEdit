@@ -4,6 +4,8 @@
  * Author: Taylor Talkington
  * License: AGPLv3
  */
+var interactiveWarning = "Warning!\nInteractive mode will send movement commands to the printer. This could damage the printer if not configured properly.\n\nEnable interactive mode?";
+
 $(function() {
     function UblmesheditViewModel(parameters) {
         var self = this;
@@ -21,6 +23,38 @@ $(function() {
         self.waitingOK = ko.observable(false);
         self.notUBL = ko.observable(false);
         self.showNoMesh = ko.observable(false);
+        self.interactiveProbing = ko.observable(false);
+        self.inInteractive = false;
+
+
+        self.interactiveProbing.subscribe(
+            function(newValue) {
+                if (newValue) self.enableInteractive();
+                else self.disableInteractive();
+            }
+        );
+
+        self.enableInteractive = function() {
+            if (!self.settings.settings.plugins.ublmeshedit.interactive_probe_hide_warning()) {
+                if(!confirm(interactiveWarning)) {
+                    self.interactiveProbing(false);
+                    return;
+                }
+            }
+
+            self.inInteractive = true;
+            
+            OctoPrint.control.sendGcode(self.settings.settings.plugins.ublmeshedit.interactive_probe_pre_gcode().split("\n"));
+
+            alert("Interactive Probing Mode Enabled. Please wait for your printer to finish homing and running the startup script.");
+        }
+
+        self.disableInteractive = function() {
+            if (self.inInteractive) {
+                OctoPrint.control.sendGcode(self.settings.settings.plugins.ublmeshedit.interactive_probe_post_gcode().split("\n"));
+                self.inInteractive = false;
+            }
+        }
 
         self.meshButtonColor = function(value, min, max) {
             var minColor = [79, 91, 249];
@@ -133,6 +167,22 @@ $(function() {
             $('#tab_plugin_ublmeshedit button.mesh-button').removeClass('mesh-selected');
             $(event.target).toggleClass('mesh-selected');
             $('#ublMeshEditSavePoint').prop('disabled', false);
+
+            if (self.inInteractive) {
+                var i = self.pointCol();
+                var j = self.pointRow();
+                var zHop = self.settings.settings.plugins.ublmeshedit.interactive_probe_z_hop();
+                var zPoint = self.settings.settings.plugins.ublmeshedit.interactive_probe_at_point_z();
+                var zFeed = self.settings.settings.plugins.ublmeshedit.interactive_probe_zfeed() * 60;
+                var xyFeed = self.settings.settings.plugins.ublmeshedit.interactive_probe_xyfeed() * 60; 
+
+                var cmds = [
+                    `G0 Z${zHop} F${zFeed}`,
+                    `G42 I${i} J${j} F${xyFeed}`,  
+                    `G0 Z${zPoint} F${zFeed}`                  
+                ];
+                OctoPrint.control.sendGcode(cmds);                
+            }
         }
 
         self.zeroMesh = function() {

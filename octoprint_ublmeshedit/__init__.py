@@ -30,7 +30,25 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 	def get_settings_defaults(self):
 		return dict(
 			export_gcode_filename="Restore Mesh - {printerName} - {dateTime}.gcode",
-			hide_non_ubl_warning=False
+			hide_non_ubl_warning=False,
+			interactive_probe_pre_gcode=
+				"M18 S3000   ; stepper timeout = 50m\n"
+				"G28         ; home\n"
+				"M420 S1     ; enable the mesh\n"
+				"G90         ; absolute positioning\n"
+				"G0 Z5 F1500 ; move to Z = 5 at 25mm/s\n"
+				"M211 S0     ; disable software endstops\n"
+			,
+			interactive_probe_post_gcode=
+				"G28      ; home\n"
+				"M18 S300 ; stepper timeout = 5m\n"
+				"M84      ; disable steppers\n"
+			,
+			interactive_probe_zfeed=5,
+			interactive_probe_xyfeed=30,
+			interactive_probe_hide_warning=False,
+			interactive_probe_z_hop=5,
+			interactive_probe_at_point_z=0.2
 		)
 
 	def get_template_configs(self):

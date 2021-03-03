@@ -24,4 +24,54 @@
             <span class="help-block">A warning will be shown on the UBL Mesh Editor tab if a non-UBL mesh (some other ABL) is detected. If checked, this warning will be hidden.</span>
         </div>
     </div>
+    <hr>
+    <h4>Interactive Probing</h4>
+    <div class="control-group">
+        <div class="controls">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.ublmeshedit.interactive_probe_hide_warning">Hide warning when enabling
+            </label>
+        </div>
+
+        <label class="control-label">Pre-GCode Commands</label>
+        <div class="controls">
+            <textarea rows="8" id="ublMeshEditSettingsInteractiveProbePreGCode" class="block monospace" data-bind="value: settings.plugins.ublmeshedit.interactive_probe_pre_gcode"></textarea>
+            <span class="help-block">GCode Commands that are run when enabling interactive probing mode. This should include auto homing, enabling the mesh if needed, and optionally heating the bed/hotend and pre-positioning the hotend. Defaults:<br>
+                <pre class="monospace">M18 S3000   ; stepper timeout = 50m
+G28         ; home
+M420 S1     ; enable the mesh
+G90         ; absolute positioning
+G0 Z5 F1500 ; move to Z = 5 at 25mm/s
+M211 S0     ; disable software endstops</pre>
+            </span>
+        </div>
+        
+        <label class="control-label">Post-GCode Commands</label>
+        <div class="controls">
+            <textarea rows="8" id="ublMeshEditSettingsInteractiveProbePostGCode" class="block monospace" data-bind="value: settings.plugins.ublmeshedit.interactive_probe_post_gcode"></textarea>
+            <span class="help-block">GCode Commands that are run when disabling interactive probing mode. Defaults:<br>
+                <pre class="monospace">G28      ; home
+M18 S300 ; stepper timeout = 5m
+M84      ; disable steppers</pre>
+            </span>
+        </div>
+
+        <label class="control-label">Z Feed Rate</label>
+        <div class="controls">
+            <input type="number" id="ublMeshEditSettingsInteractiveProbeZFeed" class="block " data-bind="value: settings.plugins.ublmeshedit.interactive_probe_zfeed">mm/s
+        </div>
+
+        <label class="control-label">X/Y Feed Rate</label>
+        <div class="controls">
+            <input type="number" id="ublMeshEditSettingsInteractiveProbeXYFeed" class="block " data-bind="value: settings.plugins.ublmeshedit.interactive_probe_xyfeed">mm/s
+        </div>
+        <label class="control-label">Z Hop</label>
+        <div class="controls">
+            <input type="number" id="ublMeshEditSettingsInteractiveProbeXYFeed" class="block " data-bind="value: settings.plugins.ublmeshedit.interactive_probe_z_hop">mm
+        </div>
+        <label class="control-label">Z at Point</label>
+        <div class="controls">
+            <input type="number" id="ublMeshEditSettingsInteractiveProbeXYFeed" class="block " data-bind="value: settings.plugins.ublmeshedit.interactive_probe_at_point_z">mm
+        </div>
+    </div>
 </div>
