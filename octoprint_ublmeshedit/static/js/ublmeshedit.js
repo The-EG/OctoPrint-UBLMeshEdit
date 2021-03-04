@@ -21,6 +21,17 @@ $(function() {
         self.waitingOK = ko.observable(false);
         self.notUBL = ko.observable(false);
 
+        self.pointInCircularBed = function(i, j) {
+            var fudge = 0.05;
+            var insetDist = self.settings.settings.plugins.ublmeshedit.circular_bed_inset_perc() / 100 * (self.gridSize - 1);
+            var c = (self.gridSize - 1) / 2;
+            var r = c + insetDist;
+
+            var dist = Math.sqrt( Math.pow(i - c, 2) + Math.pow(j - c, 2));
+
+            return dist <= (r + fudge);
+        }
+
         self.meshButtonColor = function(value, min, max) {
             var minColor = [79, 91, 249];
             var zeroColor = [87, 150, 67];
@@ -97,23 +108,65 @@ $(function() {
                     if (self.gridData()[row][col] > valMax) valMax = self.gridData()[row][col];
                 }
             }
+
+            if (self.settings.settings.plugins.ublmeshedit.show_mesh_headers() && self.notUBL()) {
+               
+                var tr = $('<tr><td>&nbsp;</td></tr>');
+                tbl.append(tr);
+                
+                for (var col=0; col< self.gridSize; col++) {
+                    var th = $(`<th>${col}</th>`);
+                    tr.append(th);
+                }
+            }
  
             for (var row = 0; row < self.gridSize; row++) {
+                var dataRow = self.gridSize - 1 - row;
+                if (self.notUBL()) {
+                    dataRow = row;
+                }
                 var tr = $("<tr />");
                 tbl.append(tr);
+
+                if (self.settings.settings.plugins.ublmeshedit.show_mesh_headers()) {
+
+                    var th = $(`<th>${dataRow}</th>`);
+                    tr.append(th);
+                }
+
                 for (var col = 0; col < self.gridSize; col++) {
                     var  btn = $('<button class="mesh-button" />');
                     var dataCol = col;
-                    var dataRow = self.gridSize - 1 - row;
-                    if (self.notUBL()) {
-                        dataRow = row;
-                    }
                     btn.text(self.gridData()[row][col].toFixed(3));
                     btn.attr({'data-col': dataCol, 'data-row': dataRow, 'style': `background-color: ${self.meshButtonColor(self.gridData()[row][col],valMin, valMax)}`});
-                    btn.click(self.selectPoint)
+                    btn.click(self.selectPoint);
+
+                    if (self.settings.settings.plugins.ublmeshedit.circular_bed()) {
+                        if (!self.pointInCircularBed(dataCol, dataRow)) {
+                            btn.addClass("mesh-button-offbed")
+                        }
+                    }
+
+                    
                     var td = $('<td />');
+                    if (row == 0) td.addClass('mesh-top');
+                    if (row == self.gridSize - 1) td.addClass('mesh-bottom');
+                    if (col == 0) td.addClass('mesh-left');
+                    if (col == self.gridSize - 1) td.addClass('mesh-right');
+
                     td.append(btn);
                     tr.append(td);
+                }
+            }
+
+            if (self.settings.settings.plugins.ublmeshedit.show_mesh_headers() && !self.notUBL()) {
+               
+                var tr = $('<tr><td>&nbsp;</td></tr>');
+                tbl.append(tr);
+                
+                for (var col=0; col< self.gridSize; col++) {
+                    var th = $(`<th>${col}</th>`);
+                    tr.append(th);
                 }
             }
         }
