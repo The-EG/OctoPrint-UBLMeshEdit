@@ -30,7 +30,10 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 	def get_settings_defaults(self):
 		return dict(
 			export_gcode_filename="Restore Mesh - {printerName} - {dateTime}.gcode",
-			hide_non_ubl_warning=False
+			hide_non_ubl_warning=False,
+			circular_bed=False,
+			circular_bed_inset_perc=0.0,
+			show_mesh_headers=False
 		)
 
 	def get_template_configs(self):

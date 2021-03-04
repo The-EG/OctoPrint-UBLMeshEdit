@@ -1,6 +1,21 @@
 #tab_plugin_ublmeshedit table.mesh-grid {
-    border: 1px solid;
     border-collapse: collapse;
+}
+
+#tab_plugin_ublmeshedit td.mesh-top {
+    border-top: 1px solid;
+}
+
+#tab_plugin_ublmeshedit td.mesh-left {
+    border-left: 1px solid;
+}
+
+#tab_plugin_ublmeshedit td.mesh-right {
+    border-right: 1px solid;
+}
+
+#tab_plugin_ublmeshedit td.mesh-bottom {
+    border-bottom: 1px solid;
 }
 
 #tab_plugin_ublmeshedit div.ubl-mesh-editor-warning {
@@ -34,6 +49,10 @@
     border-radius: 3px;
     color: #fff;
     margin: 0px;
+}
+
+#tab_plugin_ublmeshedit button.mesh-button-offbed {
+    opacity: 0.3;
 }
 
 #tab_plugin_ublmeshedit button.mesh-button:hover {
