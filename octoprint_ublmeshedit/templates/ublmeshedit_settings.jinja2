@@ -24,4 +24,27 @@
             <span class="help-block">A warning will be shown on the UBL Mesh Editor tab if a non-UBL mesh (some other ABL) is detected. If checked, this warning will be hidden.</span>
         </div>
     </div>
+    
+    <h4>Mesh Display</h4>
+    <div class="control-group">
+        <div class="controls">
+            <div class="alert alert-block"><strong>Note:</strong>These settings will not take affect until the mesh is retrieved again.</div>
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.ublmeshedit.show_mesh_headers">Show Mesh Row &amp; Column Indexes
+            </label>
+
+        </div>
+        <div class="controls">
+            <h5>Circular Beds</h5>
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.ublmeshedit.circular_bed">Circular Bed (Delta)
+            </label>
+            <span class="help-block">For circular beds, mesh squares outside of the bed will be indicated differently.</span>
+        </div>
+        <label class="control-label">Circular Bed Mesh Inset</label>
+        <div class="controls">
+            <input type="number" min="0" max="100" data-bind="value: settings.plugins.ublmeshedit.circular_bed_inset_perc">%
+            <span class="help-block">Mesh inset as a percentage of the bed diamter.</span>
+        </div>
+    </div>
 </div>
