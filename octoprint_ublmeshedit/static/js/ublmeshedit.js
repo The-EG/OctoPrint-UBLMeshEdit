@@ -63,7 +63,8 @@ $(function() {
         }
 
         self.onEventplugin_ublmeshedit_mesh_ready = function(payload) {
-
+            console.log("Got mesh:");
+            console.log(payload.data);
             $('#ublMeshEditorGrid').empty();
 
             self.pointRow(undefined);
@@ -109,11 +110,19 @@ $(function() {
                     var  btn = $('<button class="mesh-button" />');
                     var dataCol = col;
                     var dataRow = self.gridSize - 1 - row;
+                    var val = self.gridData()[row][col];
+                    var txt = (val!=null) ? val.toFixed(3) : '-';
+
                     if (self.notUBL()) {
                         dataRow = row;
                     }
-                    btn.text(self.gridData()[row][col].toFixed(3));
-                    btn.attr({'data-col': dataCol, 'data-row': dataRow, 'style': `background-color: ${self.meshButtonColor(self.gridData()[row][col],valMin, valMax)}`});
+                    btn.text(txt);
+                    btn.attr({'data-col': dataCol, 'data-row': dataRow });
+                    if(val!=null) {
+                        btn.attr({'style': `background-color: ${self.meshButtonColor(val, valMin, valMax)}`});
+                    } else {
+                        btn.attr({'style': 'background-color: #555;'});
+                    }
                     btn.click(self.selectPoint)
                     var td = $('<td />');
                     td.append(btn);
@@ -127,9 +136,15 @@ $(function() {
         }
 
         self.selectPoint = function(event) {
-            self.pointCol(parseInt($(event.target).attr('data-col')));
-            self.pointRow(parseInt($(event.target).attr('data-row')));
-            self.pointValue(parseFloat($(event.target).text()));
+            var col = parseInt($(event.target).attr('data-col'));
+            var row = parseInt($(event.target).attr('data-row'));
+            var val = $(event.target).text();
+
+            val = (val==='-') ? null : parseFloat(val);
+
+            self.pointCol(col);
+            self.pointRow(row);
+            self.pointValue(val);
             $('#tab_plugin_ublmeshedit button.mesh-button').removeClass('mesh-selected');
             $(event.target).toggleClass('mesh-selected');
             $('#ublMeshEditSavePoint').prop('disabled', false);
