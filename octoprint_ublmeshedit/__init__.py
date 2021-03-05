@@ -69,6 +69,7 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 			return line
 
 		if line.strip() == 'Bed Topography Report for CSV:':
+			self._logger.info('Found mesh topo header')
 			self.in_topo = True
 			self.mesh_data = []
 			self.not_ubl = False
@@ -79,7 +80,8 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 			self.skip_first = True
 			self.skip_line = True
 			self.not_ubl = True
-		elif line.strip() in ['Mesh is valid','echo:Bed Leveling OFF', 'echo:Bed Leveling ON'] or line.startswith('Subdivided with'):
+		elif line.strip() in ['Mesh is valid','Mesh is invalid','echo:Bed Leveling OFF', 'echo:Bed Leveling ON'] or line.startswith('Subdivided with'):
+			self._logger.info('found mesh footer')
 			self.in_topo = False
 		elif line.strip() == 'ok' or line.strip()[:2]=='ok':
 			self.wait_mesh = False
@@ -95,6 +97,8 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 				self.skip_line = False
 			else:
 				row = list(map(float,line.strip().split()))
+				row = [None if v != v else v for v in row] # convert NAN to None
+				self._logger.info(f'got mesh row: {row}')
 				if self.skip_first: row = row[1:]
 				self.mesh_data.append(row)
 
