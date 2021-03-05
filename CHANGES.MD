@@ -1,4 +1,7 @@
 
+- 0.2.2 - 2021-03-05
+  - Fix detection for ABL wish mesh subdivision (Snapmaker) (#5)
+  - Add an note when no mesh is detected, directing user to open issue
 - 0.2.1 - 2021-02-28
   - New Features:
     - Basic ABL compatibility: this plugin will now attempt to show and allow point editing of ABL meshes, however a warning will be displayed and most other features will be disabled. This warning can be hidden in the plugin settings.
