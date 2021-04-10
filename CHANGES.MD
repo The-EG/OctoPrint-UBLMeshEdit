@@ -1,4 +1,7 @@
-
+- 0.3.0 - 2021-04-10
+  - Add option to display mesh row and column headers
+  - Add option to display circular bed extent
+  - Add initial handling of invalid mesh points
 - 0.2.2 - 2021-03-05
   - Fix detection for ABL with mesh subdivision (Snapmaker) (#5)
   - Add an note when no mesh is detected, directing user to open issue
