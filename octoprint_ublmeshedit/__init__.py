@@ -98,7 +98,7 @@ class UBLMeshEditPlugin(octoprint.plugin.AssetPlugin,
 			else:
 				row = list(map(float,line.strip().split()))
 				row = [None if v != v else v for v in row] # convert NAN to None
-				self._logger.info(f'got mesh row: {row}')
+				self._logger.info('got mesh row: {0}'.format(row))
 				if self.skip_first: row = row[1:]
 				self.mesh_data.append(row)
 
